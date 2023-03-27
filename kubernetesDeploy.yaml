@@ -1,0 +1,15 @@
+- name : Deploy Pods on Kubernetes Cluster
+  hosts : all
+  tasks : 
+  - name: Remove Existing Deployment
+    command: "kubectl delete deployment kubernetes-bootcamp"
+    ignore_errors: true
+
+  - name: Performing Deployment of {{ dockerImageTag }}
+    command: "kubectl create deployment kubernetes-bootcamp --image={{ dockerImageTag }} --port=8989"
+
+  - name: Deploy Kubernetes Service
+    command: "kubectl expose deployment kubernetes-bootcamp --type=NodePort"
+
+  - name: Get Deployment List
+    command: "kubectl get deployments "
