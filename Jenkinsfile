@@ -6,7 +6,7 @@ node{
         echo 'Initialize Environment'
         tag="3.0"
 		dockerHubUser="anujsharma1990"
-		containerName="insure-me"
+		containerName="bankingapp"
 		httpPort="8081"
     }
     
@@ -47,7 +47,7 @@ node{
     }    
 	
 	stage('Ansible Playbook Execution'){
-		ansiblePlaybook inventory: 'inventory.yaml', playbook: 'kubernetesDeploy.yaml', extras: "-e dockerImageTag=$dockerHubUser/$containerName:$tag"
+		sh "ansible-playbook -i inventory.yaml kubernetesDeploy.yaml -e dockerImageTag=$dockerHubUser/$containerName:$tag"
 	}
 }
 
