@@ -1,11 +1,9 @@
 node{
     
-    def mavenHome, mavenCMD, tag, dockerHubUser, containerName, httpPort = ""
+    def tag, dockerHubUser, containerName, httpPort = ""
     
     stage('Prepare Environment'){
         echo 'Initialize Environment'
-        mavenHome = tool name: 'maven' , type: 'maven'
-        mavenCMD = "${mavenHome}/bin/mvn"
         tag="3.0"
 		dockerHubUser="anujsharma1990"
 		containerName="insure-me"
@@ -26,11 +24,7 @@ node{
     }
     
     stage('Maven Build'){
-        sh "${mavenCMD} clean package"        
-    }
-    
-    stage('Publish Test Reports'){
-        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+        sh "mvn clean package"        
     }
     
     stage('Docker Image Build'){
