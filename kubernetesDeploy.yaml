@@ -6,7 +6,7 @@
     ignore_errors: true
 
   - name: Performing Deployment of {{ dockerImageTag }}
-    command: "docker run -d --name {{ containerName }} {{ dockerImageTag }}"
+    command: "docker run -d --name {{ containerName }} -p {{ httpPort }}:{{ httpPort }} {{ dockerImageTag }}"
 
   - name: Get Container List
     command: "docker ps"
