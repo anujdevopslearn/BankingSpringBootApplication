@@ -1,2 +1,2 @@
 [kubernetes]
-localhost
+localhost ansible_ssh_port=42006
