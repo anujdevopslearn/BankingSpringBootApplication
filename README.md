@@ -8,7 +8,6 @@ RESTful API to simulate simple banking operations.
 *	Support deposits and withdrawals on accounts.
 *	Internal transfer support (i.e. a customer may transfer funds from one account to another).
 
-
 ## Getting Started
 
 1. Checkout the project from GitHub
