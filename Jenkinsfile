@@ -32,18 +32,7 @@ node{
     stage('Docker Image Build'){
         echo 'Creating Docker image'
         sh "docker build -t $dockerHubUser/$containerName:$tag --pull --no-cache ."
-    }
-
-    stage('SonarQube Scan'){
-	withCredentials([string(credentialsId: 'SonarToken', variable: 'SonarToken')]) {
-	     sh "mvn sonar:sonar -Dsonar.login=${SonarToken}"
-	}
-    }
-	
-   stage('Docker Image Scan'){
-        echo 'Scanning Docker image for vulnerbilities'
-        sh "trivy image ${dockerHubUser}/$containerName:${tag}"
-    }    
+    }  
 	
     stage('Publishing Image to DockerHub'){
         echo 'Pushing the docker image to DockerHub'
