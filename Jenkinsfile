@@ -39,10 +39,11 @@ node{
 	     sh "mvn sonar:sonar -Dsonar.login=${SonarToken}"
 	}
     }
-    stage('Docker Image Scan'){
+	
+   stage('Docker Image Scan'){
         echo 'Scanning Docker image for vulnerbilities'
-	    sh "docker build -t ${dockerHubUser}/${containerName}:${tag} ."
-    }   
+        sh "trivy image ${dockerHubUser}/$containerName:${tag}"
+    }    
 	
     stage('Publishing Image to DockerHub'){
         echo 'Pushing the docker image to DockerHub'
