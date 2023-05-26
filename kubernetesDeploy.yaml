@@ -1,12 +1,12 @@
 - name : Deploy Pods on Docker Container
-  hosts : all
+  hosts : kubernetes
   tasks : 
   - name: Remove Existing Container
-    command: "docker rm {{ containerName }} -f"
+    command: "kubectl delete deployment {{ containerName }}"
     ignore_errors: true
 
   - name: Performing Deployment of {{ dockerImageTag }}
-    command: "docker run -d --name {{ containerName }} -p {{ httpPort }}:{{ httpPort }} {{ dockerImageTag }}"
+    command: "kubectl create deployment {{ containerName }} --image=docker.io/{{ dockerImageTag }} --port={{ httpPort }} "
 
   - name: Get Container List
-    command: "docker ps"
+    command: "Kubectl get pods -o wide"
