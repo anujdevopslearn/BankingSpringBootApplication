@@ -9,4 +9,4 @@
     command: "kubectl create deployment {{ containerName }} --image=docker.io/{{ dockerImageTag }} --port={{ httpPort }} "
 
   - name: Get Container List
-    command: "Kubectl get pods -o wide"
+    command: "kubectl get pods -o wide"
