@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.coding.exercise.bankapp.BankingApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 269.099 s - in com.coding.exercise.bankapp.BankingApplicationTests
