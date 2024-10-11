@@ -1,0 +1,12 @@
+- name : Deploy Pods on Docker Container
+  hosts : all
+  tasks : 
+  - name: Remove Existing Container
+    command: "docker rm {{ containerName }}"
+    ignore_errors: true
+
+  - name: Performing Deployment of {{ dockerImageTag }}
+    command: "docker run -d --name {{ containerName }} -p {{ httpPort }}:{{ httpPort }} docker.io/{{ dockerImageTag }}"
+
+  - name: Get Container List
+    command: "docker ps"
