@@ -3,7 +3,6 @@
   tasks : 
   - name: Apt Update
     apt:
-      name: foo
       update_cache: yes
 
   - name: Install Docker
