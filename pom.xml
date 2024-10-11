@@ -14,10 +14,6 @@
 	<name>BankApp</name>
 	<description>Bank App Spring Boot Project</description>
 
-	<properties>
-		<java.version>1.17</java.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
