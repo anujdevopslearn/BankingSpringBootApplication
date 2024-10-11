@@ -1,6 +1,9 @@
 - name : Deploy Pods on Docker Container
   hosts : all
   tasks : 
+  - name: Install Docker
+    apt: name=docker.io state=latest
+
   - name: Remove Existing Container
     command: "docker rm {{ containerName }}"
     ignore_errors: true
