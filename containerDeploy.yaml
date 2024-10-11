@@ -1,6 +1,11 @@
 - name : Deploy Pods on Docker Container
   hosts : all
   tasks : 
+  - name: Apt Update
+    apt:
+      name: foo
+      update_cache: yes
+
   - name: Install Docker
     apt: name=docker.io state=latest
 
