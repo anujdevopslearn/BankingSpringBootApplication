@@ -39,9 +39,10 @@ node{
 		echo "Image push complete"
         } 
     }    
-	
 	stage('Ansible Playbook Execution'){
-		sh "ansible-playbook -i inventory.yaml kubernetesDeploy.yaml -e httpPort=$httpPort -e containerName=$containerName -e dockerImageTag=$dockerHubUser/$containerName:$tag"
+		withCredentials([string(credentialsId: 'ssh_password', variable: 'password')]) {
+			sh "ansible-playbook -i inventory.yaml kubernetesDeploy.yaml -e httpPort=$httpPort -e containerName=$containerName -e dockerImageTag=$dockerHubUser/$containerName:$tag -e ansible_password=$password -e key_pair_path=/var/lib/jenkins/server.pem" 
+		}
 	}
 }
 
