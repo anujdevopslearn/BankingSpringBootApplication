@@ -43,9 +43,10 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+		  <groupId>org.projectlombok</groupId>
+		  <artifactId>lombok</artifactId>
+		  <version>1.18.32</version> <!-- Replace with latest -->
+		  <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
