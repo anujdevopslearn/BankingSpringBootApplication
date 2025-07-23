@@ -5,7 +5,7 @@ node{
     stage('Prepare Environment'){
         echo 'Initialize Environment'
         tag="3.0"
-	withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'nighthawk792', passwordVariable: 'Welcome@123')]) {
+	withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'dockerUser', passwordVariable: 'dockerPassword')]) {
 		dockerHubUser= nighthawk792
         }
 	containerName="bankingapp"
@@ -33,7 +33,7 @@ node{
 	
     stage('Publishing Image to DockerHub'){
         echo 'Pushing the docker image to DockerHub'
-        withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'nighthawk792', passwordVariable: 'Welcome@123')]) {
+        withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'dockerUser', passwordVariable: 'dockerPassword')]) {
 		sh "docker login -u $dockerUser -p $dockerPassword"
 		sh "docker push $dockerUser/$containerName:$tag"
 		echo "Image push complete"
