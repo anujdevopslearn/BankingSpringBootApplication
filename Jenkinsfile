@@ -1,47 +1,119 @@
-node{
-    
-    def tag, dockerHubUser, containerName, httpPort = ""
-    
-    stage('Prepare Environment'){
-        echo 'Initialize Environment'
-        tag="3.0"
-	withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'dockerUser', passwordVariable: 'dockerPassword')]) {
-		dockerHubUser="$dockerUser"
-        }
-	containerName="bankingapp"
-	httpPort="8989"
+node {
+
+    def tag = "3.0"
+    def dockerHubUser = ""
+    def containerName = "bankingapp"
+    def httpPort = "8989"
+    def containerPort = "8080"
+
+    stage('Clean Workspace') {
+        cleanWs()
     }
-    
-    stage('Code Checkout'){
-        try{
-            checkout scm
-        }
-        catch(Exception e){
-            echo 'Exception occured in Git Code Checkout Stage'
-            currentBuild.result = "FAILURE"
+
+    stage('Checkout Code') {
+        echo "Checking out source code..."
+        checkout scm
+    }
+
+    stage('Maven Build') {
+        echo "Building application..."
+        sh "mvn clean package -DskipTests"
+    }
+
+    stage('Get Docker Credentials') {
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'dockerHubAccount',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_PASSWORD'
+            )
+        ]) {
+            dockerHubUser = env.DOCKER_USER
         }
     }
-    
-    stage('Maven Build'){
-        sh "mvn clean package"        
+
+    stage('Build Docker Image') {
+        echo "Building Docker image..."
+
+        sh """
+            docker build \
+                --pull \
+                --no-cache \
+                -t ${dockerHubUser}/${containerName}:${tag} .
+        """
     }
-    
-    stage('Docker Image Build'){
-        echo 'Creating Docker image'
-        sh "docker build -t $dockerHubUser/$containerName:$tag --pull --no-cache ."
-    }  
-	
-    stage('Publishing Image to DockerHub'){
-        echo 'Pushing the docker image to DockerHub'
-        withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'dockerUser', passwordVariable: 'dockerPassword')]) {
-		sh "docker login -u $dockerUser -p $dockerPassword"
-		sh "docker push $dockerUser/$containerName:$tag"
-		echo "Image push complete"
-        } 
-    }    
-	stage('Ansible Playbook Execution'){
-			sh "export ANSIBLE_HOST_KEY_CHECKING=False && ansible-playbook -i inventory.yaml containerDeploy.yaml -e httpPort=$httpPort -e containerName=$containerName -e dockerImageTag=$dockerHubUser/$containerName:$tag -e key_pair_path=/var/lib/jenkins/server.pem --become" 
-	}
+
+    stage('Push Docker Image') {
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'dockerHubAccount',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_PASSWORD'
+            )
+        ]) {
+
+            sh """
+                echo "\$DOCKER_PASSWORD" | docker login \
+                    -u "\$DOCKER_USER" \
+                    --password-stdin
+
+                docker push ${dockerHubUser}/${containerName}:${tag}
+
+                docker logout
+            """
+        }
+    }
+
+    stage('Deploy Container') {
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'dockerHubAccount',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_PASSWORD'
+            )
+        ]) {
+
+            sh """
+                echo "\$DOCKER_PASSWORD" | docker login \
+                    -u "\$DOCKER_USER" \
+                    --password-stdin
+
+                docker pull ${dockerHubUser}/${containerName}:${tag}
+
+                echo "Checking for existing container..."
+
+                if docker ps -a --format '{{.Names}}' | grep -w ${containerName}; then
+                    echo "Stopping existing container..."
+                    docker stop ${containerName}
+                    docker rm ${containerName}
+                fi
+
+                echo "Starting new container..."
+
+                docker run -d \
+                    --name ${containerName} \
+                    --restart unless-stopped \
+                    -p ${httpPort}:${containerPort} \
+                    ${dockerHubUser}/${containerName}:${tag}
+
+                docker image prune -f
+
+                docker logout
+            """
+        }
+    }
+
+    stage('Verify Deployment') {
+        sleep 15
+
+        sh """
+            docker ps
+
+            curl -f http://localhost:${httpPort}/bank-api/swagger-ui.html
+        """
+    }
+
+    stage('Cleanup') {
+        cleanWs()
+    }
 }
-
-
