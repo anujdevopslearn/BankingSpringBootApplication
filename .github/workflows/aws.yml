@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: "us-east-1"                   # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: "273379764941.dkr.ecr.us-east-1.amazonaws.com/custom-repo"           # set this to your Amazon ECR repository name
+  ECR_REPOSITORY: "custom-repo"           # set this to your Amazon ECR repository name
   CONTAINER_NAME: "bankingapp"           # set this to the name of the container in the
 
 permissions:
