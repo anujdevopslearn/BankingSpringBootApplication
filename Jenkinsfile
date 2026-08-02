@@ -102,7 +102,15 @@ node {
             """
         }
     }
+    stage('Kubernetes Deployment') {
+        sleep 15
 
+        sh """
+           kubectl delete -f deployment.yaml
+           kubectl apply -f deployment.yaml
+           kubectl get pods -o wide
+        """
+    }
     stage('Verify Deployment') {
         sleep 15
 
