@@ -106,7 +106,7 @@ node {
         sleep 15
 
         sh """
-           kubectl delete -f deployment.yaml
+           kubectl delete -f deployment.yaml | true
            kubectl apply -f deployment.yaml
            kubectl get pods -o wide
         """
