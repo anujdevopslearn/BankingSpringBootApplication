@@ -75,6 +75,10 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<!-- Replace this with the exact package and class name of your main class -->
+					<mainClass>com.coding.exercise.bankapp.BankAppApplication</mainClass>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
