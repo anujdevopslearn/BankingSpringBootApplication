@@ -102,6 +102,7 @@ node {
             """
         }
     }
+    /*
     stage('Kubernetes Deployment') {
         sleep 15
 
@@ -111,6 +112,7 @@ node {
            kubectl get pods -o wide
         """
     }
+    */
     stage('Verify Deployment') {
         sleep 15
 
